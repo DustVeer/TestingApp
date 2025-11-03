@@ -76,6 +76,20 @@
         </configuration>
       </plugin>
 
+       <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <version>3.2.5</version>
+      <configuration>
+        <includes>
+          <include>**/*Test.java</include>
+        </includes>
+        <excludes>
+          <exclude>**/*ApplicationTests.java</exclude> <!-- skip the auto-generated contextLoads -->
+        </excludes>
+      </configuration>
+    </plugin>
+
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
