@@ -3,19 +3,22 @@ name: Java CD - Deploy to FTP
 on:
   push:
     tags:
-      - "v*"      # deploy when you push a tag like v1.0.0
+      - "v*"
 
 jobs:
   deploy:
-    name: Deploy to FTP Server
     runs-on: ubuntu-latest
 
+    env:
+      FTP_HOST: ${{ vars.FTP_HOST }}
+      FTP_USER: ${{ vars.FTP_USER }}
+      FTP_PATH: ${{ vars.FTP_PATH }}
+      FTP_PASS: ${{ secrets.FTP_PASS }}
+
     steps:
-      # 1. Checkout repository
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Install JDK 17
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
@@ -23,15 +26,20 @@ jobs:
           java-version: "17"
           cache: maven
 
-      # 3. Build project
       - name: Build project
         run: mvn -B -DskipTests package
 
-      # 4. Upload JAR to FTP
+      # Debug step: see what URL is being built (host/path only)
+      - name: Debug FTP URL
+        run: |
+          echo "FTP_HOST='$FTP_HOST'"
+          echo "FTP_PATH='$FTP_PATH'"
+          echo "Final URL = ftps://$FTP_HOST$FTP_PATH"
+
       - name: Deploy to FTP server (FTPS)
         run: |
           echo "Uploading JAR via FTPS..."
           curl -v --ssl --ftp-pasv --ftp-create-dirs \
-          -T target/*.jar \
-          "ftps://$FTP_HOST$FTP_PATH" \
-          --user "$FTP_USER:$FTP_PASS"
+            -T target/*.jar \
+            "ftps://$FTP_HOST$FTP_PATH" \
+            --user "$FTP_USER:$FTP_PASS"
