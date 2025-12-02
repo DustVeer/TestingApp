@@ -28,9 +28,10 @@ jobs:
         run: mvn -B -DskipTests package
 
       # 4. Upload JAR to FTP
-      - name: Deploy to FTP server
+      - name: Deploy to FTP server (FTPS)
         run: |
-          echo "Deploying JAR to FTP..."
-          curl --ftp-create-dirs -T target/*.jar \
-            ftp://$FTP_HOST/$FTP_PATH/ \
-            --user $FTP_USER:$FTP_PASS
+          echo "Uploading JAR via FTPS..."
+          curl -v --ssl --ftp-pasv --ftp-create-dirs \
+          -T target/*.jar \
+          "ftps://$FTP_HOST$FTP_PATH" \
+          --user "$FTP_USER:$FTP_PASS"
