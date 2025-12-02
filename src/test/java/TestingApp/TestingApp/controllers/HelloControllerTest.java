@@ -19,42 +19,45 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(HelloController.class)
 class HelloControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+       @Autowired
+       private MockMvc mockMvc;
 
-    @MockitoBean
-    private UserRepo userRepo;
+       @MockitoBean
+       private UserRepo userRepo;
 
-    @Test
-    void hello_returnsHelloWorld() throws Exception {
-        mockMvc.perform(get("/hello"))
-               .andExpect(status().isOk())
-               .andExpect(content().string("Hello World"));
-    }
+       @Test
+       void hello_returnsHelloWorld() throws Exception {
+              mockMvc.perform(get("/hello"))
+                            .andExpect(status().isOk())
+                            .andExpect(content().string("Hello World"));
+              System.out.println("Test hello_returnsHelloWorld passed.");
+       }
 
-    @Test
-    void helloFirstName_returnsGreeting_whenUserExists() throws Exception {
-        // Arrange
-        User user = new User();
-        user.setFirstName("Dustin");
-        user.setLastName("van de Veerdonk");
+       @Test
+       void helloFirstName_returnsGreeting_whenUserExists() throws Exception {
+              // Arrange
+              User user = new User();
+              user.setFirstName("Dustin");
+              user.setLastName("van de Veerdonk");
 
-        Mockito.when(userRepo.findByFirstName(eq("Dustin")))
-               .thenReturn(Optional.of(user));
+              Mockito.when(userRepo.findByFirstName(eq("Dustin")))
+                            .thenReturn(Optional.of(user));
 
-        // Act & Assert
-        mockMvc.perform(get("/hello/Dustin"))
-               .andExpect(status().isOk())
-               .andExpect(content().string("Hello, Dustin van de Veerdonk!"));
-    }
+              // Act & Assert
+              mockMvc.perform(get("/hello/Dustin"))
+                            .andExpect(status().isOk())
+                            .andExpect(content().string("Hello, Dustin van de Veerdonk!"));
+              System.out.println("Test helloFirstName_returnsGreeting_whenUserExists passed.");
+       }
 
-    @Test
-    void helloFirstName_returnsNotFound_whenUserMissing() throws Exception {
-        Mockito.when(userRepo.findByFirstName(eq("NonExistentUser")))
-               .thenReturn(Optional.empty());
+       @Test
+       void helloFirstName_returnsNotFound_whenUserMissing() throws Exception {
+              Mockito.when(userRepo.findByFirstName(eq("NonExistentUser")))
+                            .thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/hello/NonExistentUser"))
-               .andExpect(status().isOk())
-               .andExpect(content().string("No User Found"));
-    }
+              mockMvc.perform(get("/hello/NonExistentUser"))
+                            .andExpect(status().isOk())
+                            .andExpect(content().string("No User Found"));
+              System.out.println("Test helloFirstName_returnsNotFound_whenUserMissing passed.");
+       }
 }

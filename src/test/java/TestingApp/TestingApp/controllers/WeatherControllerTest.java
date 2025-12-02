@@ -41,5 +41,6 @@ public class WeatherControllerTest {
 
         mockMvc.perform(get("/weather"))
                 .andExpect(status().isOk());
+        System.out.println("Test weather_ReturnsOK passed.");
     }
 }
