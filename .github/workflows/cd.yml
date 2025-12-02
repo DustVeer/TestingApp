@@ -1,0 +1,36 @@
+name: Java CD - Deploy to FTP
+
+on:
+  push:
+    tags:
+      - "v*"      # deploy when you push a tag like v1.0.0
+
+jobs:
+  deploy:
+    name: Deploy to FTP Server
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Install JDK 17
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      # 3. Build project
+      - name: Build project
+        run: mvn -B -DskipTests package
+
+      # 4. Upload JAR to FTP
+      - name: Deploy to FTP server
+        run: |
+          echo "Deploying JAR to FTP..."
+          curl --ftp-create-dirs -T target/*.jar \
+            ftp://$FTP_HOST/$FTP_PATH/ \
+            --user $FTP_USER:$FTP_PASS
