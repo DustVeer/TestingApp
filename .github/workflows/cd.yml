@@ -38,10 +38,10 @@ jobs:
           echo "FTP_PATH='$FTP_PATH'"
           echo "Final URL = ftps://$FTP_HOST$FTP_PATH"
 
-      - name: Deploy to FTP server (FTPS)
+      - name: Deploy to FTP server (Explicit FTPS)
         run: |
-          echo "Uploading JAR via FTPS..."
-          curl -v --ssl --ftp-pasv --ftp-create-dirs \
+            echo "Uploading JAR via explicit FTPS..."
+            curl -v --ssl --ftp-pasv --ftp-create-dirs \
             -T target/*.jar \
-            "ftps://$FTP_HOST$FTP_PATH" \
+            "ftp://$FTP_HOST$FTP_PATH" \
             --user "$FTP_USER:$FTP_PASS"
